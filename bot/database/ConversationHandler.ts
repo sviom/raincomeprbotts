@@ -76,11 +76,7 @@ class ConversationHandler {
      */
     async GetUserConversation(UserAAdId: string, Email?: string) {
         let returnObject = {
-            /**
-             * Conversation 정보
-             * @type {ConversationModel}
-             */
-            data: {},
+            data: new ConversationModel(),
             /** 갯수 */
             length: 0
         }
@@ -138,7 +134,7 @@ class ConversationHandler {
      * 업데이트
      * @param {ConversationModel} conversationObject
      */
-    async UpdatetUserConversation(conversationObject, email = null) {
+    async UpdatetUserConversation(conversationObject: ConversationModel, email?: string) {
         try {
             const helper = new KeyVaultHelper();
             const connection_string = await helper.GetKeyVaultSecret();
@@ -177,4 +173,5 @@ class ConversationHandler {
         }
     }
 }
-module.exports = ConversationHandler;
+
+export default ConversationHandler;

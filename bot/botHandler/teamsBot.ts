@@ -1,9 +1,11 @@
 import { default as axios } from "axios";
 import * as querystring from "querystring";
-import { TeamsActivityHandler, CardFactory, TurnContext, AdaptiveCardInvokeValue, AdaptiveCardInvokeResponse } from "botbuilder";
+import { TeamsActivityHandler, CardFactory, TurnContext, AdaptiveCardInvokeValue, AdaptiveCardInvokeResponse, Activity } from "botbuilder";
 import rawWelcomeCard from "../adaptiveCards/welcome.json"
 import rawLearnCard from "../adaptiveCards/learn.json"
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
+import ConversationModel from "../models/ConversationModel";
+import ConversationHandler from "../database/ConversationHandler";
 
 export interface DataInterface {
     likeCount: number
@@ -12,6 +14,7 @@ export interface DataInterface {
 export class TeamsBot extends TeamsActivityHandler {
     // record the likeCount
     likeCountObj: { likeCount: number };
+    public conversationReferences: ConversationModel;
 
     constructor() {
         super();
@@ -161,6 +164,30 @@ export class TeamsBot extends TeamsActivityHandler {
             composeExtension: result,
         };
         return response;
+    }
+
+    // Bind AdaptiveCard with data
+    renderAdaptiveCard(rawCardTemplate: {}) {
+        // const cardTemplate = new ACData.Template(rawCardTemplate);
+        // const cardWithData = cardTemplate.expand({ $root: dataObj });
+        // const card = CardFactory.adaptiveCard(cardWithData);
+
+        const card = AdaptiveCards.declareWithoutData(rawCardTemplate).render();
+        return CardFactory.adaptiveCard(card);
+    }
+
+    async addConversationReference(activity: Activity, email: string) {
+        const conversationReference = TurnContext.getConversationReference(activity);
+        const userId = conversationReference.user.aadObjectId;
+        if (!this.conversationReferences[userId])
+            this.conversationReferences[userId] = conversationReference;
+
+        // fs.writeFile(`./converstaion_${userId}.txt`, JSON.stringify(conversationReference), (error) => {
+        //     console.log("error : ", error);
+        // });
+
+        const handler = new ConversationHandler();
+        await handler.UpsertConversation(this.conversationReferences, email);
     }
 }
 
