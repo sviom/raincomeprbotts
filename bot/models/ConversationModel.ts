@@ -33,4 +33,4 @@ class ConversationModel {
     }
 }
 
-module.exports = ConversationModel
+export default ConversationModel;
