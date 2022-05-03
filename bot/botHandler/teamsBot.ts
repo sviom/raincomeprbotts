@@ -54,6 +54,9 @@ export class TeamsBot extends TeamsActivityHandler {
                  */
             }
 
+            // 아무 텍스트나 들어와도 Conversation Update
+            await this.addConversationReference(context.activity, txt);
+
             // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
