@@ -1,0 +1,31 @@
+{
+    "appName": "raincomeprbotts",
+    "projectId": "9f938167-ee5f-48a1-a6c4-0c795455338d",
+    "version": "2.1.0",
+    "isFromSample": false,
+    "solutionSettings": {
+        "name": "fx-solution-azure",
+        "version": "1.0.0",
+        "hostType": "Azure",
+        "azureResources": [],
+        "capabilities": [
+            "Bot",
+            "MessagingExtension"
+        ],
+        "activeResourcePlugins": [
+            "fx-resource-identity",
+            "fx-resource-bot",
+            "fx-resource-aad-app-for-teams",
+            "fx-resource-local-debug",
+            "fx-resource-appstudio",
+            "fx-resource-cicd",
+            "fx-resource-api-connector"
+        ]
+    },
+    "programmingLanguage": "typescript",
+    "pluginSettings": {
+        "fx-resource-bot": {
+            "capabilities": []
+        }
+    }
+}
