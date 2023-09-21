@@ -10,7 +10,8 @@
         "azureResources": [],
         "capabilities": [
             "Bot",
-            "MessagingExtension"
+            "MessagingExtension",
+            "BotSSO"
         ],
         "activeResourcePlugins": [
             "fx-resource-identity",

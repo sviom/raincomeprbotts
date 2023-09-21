@@ -1,6 +1,6 @@
-import sql from 'mssql';
+import sql from "mssql";
 import KeyVaultHelper from "../Helper/AzureKeyVaultHelper";
-import ConversationModel from '../models/ConversationModel';
+import ConversationModel from "../models/ConversationModel";
 
 /**
  * Conversation 을 DB에 저장하는 핸들러
@@ -11,7 +11,10 @@ class ConversationHandler {
      * @param {ConversationModel} conversationObject conversation 정보 통째로
      * @param {String} email 사용자 이메일 정보
      */
-    async UpsertConversation(conversationObject: ConversationModel, email?: string) {
+    async UpsertConversation(
+        conversationObject: ConversationModel,
+        email?: string
+    ) {
         try {
             const helper = new KeyVaultHelper();
             const connection_string = await helper.GetKeyVaultSecret();
@@ -30,7 +33,9 @@ class ConversationHandler {
                 conversationObject.user.name
             );
 
-            const getResult = await this.GetUserConversation(conversationModel.user.aadObjectId);
+            const getResult = await this.GetUserConversation(
+                conversationModel.user.aadObjectId
+            );
             if (getResult.length <= 0) {
                 let query = `
                     INSERT INTO Conversations
@@ -49,23 +54,55 @@ class ConversationHandler {
                     );
                 `;
 
-
-                let result = await pool.request()
-                    .input('BotId', sql.NVarChar(300), conversationObject.bot.id)
-                    .input('BotName', sql.NVarChar(100), conversationObject.bot.name)
-                    .input('ConversationType', sql.NVarChar(50), conversationObject.conversation.conversationType)
-                    .input('ConversationId', sql.NVarChar(300), conversationObject.conversation.id)
-                    .input('UserId', sql.NVarChar(300), conversationObject.user.id)
-                    .input('UserAADId', sql.UniqueIdentifier, conversationObject.user.aadObjectId)
-                    .input('UserName', sql.NVarChar(200), conversationObject.user.name)
-                    .input('Email', sql.NVarChar(100), email)
-                    .input('ServiceUrl', sql.NVarChar(300), conversationObject.serviceUrl)
+                let result = await pool
+                    .request()
+                    .input(
+                        "BotId",
+                        sql.NVarChar(300),
+                        conversationObject.bot.id
+                    )
+                    .input(
+                        "BotName",
+                        sql.NVarChar(100),
+                        conversationObject.bot.name
+                    )
+                    .input(
+                        "ConversationType",
+                        sql.NVarChar(50),
+                        conversationObject.conversation.conversationType
+                    )
+                    .input(
+                        "ConversationId",
+                        sql.NVarChar(300),
+                        conversationObject.conversation.id
+                    )
+                    .input(
+                        "UserId",
+                        sql.NVarChar(300),
+                        conversationObject.user.id
+                    )
+                    .input(
+                        "UserAADId",
+                        sql.UniqueIdentifier,
+                        conversationObject.user.aadObjectId
+                    )
+                    .input(
+                        "UserName",
+                        sql.NVarChar(200),
+                        conversationObject.user.name
+                    )
+                    .input("Email", sql.NVarChar(100), email)
+                    .input(
+                        "ServiceUrl",
+                        sql.NVarChar(300),
+                        conversationObject.serviceUrl
+                    )
                     .query(query);
             } else {
                 await this.UpdatetUserConversation(conversationModel, email);
             }
         } catch (err) {
-            console.error("insert error : ", err)
+            console.error("insert error : ", err);
         }
     }
 
@@ -78,8 +115,8 @@ class ConversationHandler {
         let returnObject = {
             data: new ConversationModel(),
             /** 갯수 */
-            length: 0
-        }
+            length: 0,
+        };
 
         try {
             const helper = new KeyVaultHelper();
@@ -97,10 +134,11 @@ class ConversationHandler {
             // request.input('UserAADId', sql.UniqueIdentifier, UserAAdId);
             // request.input('Email', sql.NVarChar(100), Email);
 
-            let result = await pool.request()
-                .input('UserAADId', sql.UniqueIdentifier, UserAAdId)
-                .input('Email', sql.NVarChar(100), Email)
-                .query(query)
+            let result = await pool
+                .request()
+                .input("UserAADId", sql.UniqueIdentifier, UserAAdId)
+                .input("Email", sql.NVarChar(100), Email)
+                .query(query);
 
             console.dir(result);
             const queryResult = result.recordset;
@@ -113,7 +151,8 @@ class ConversationHandler {
                 model.user.aadObjectId = userConversation.UserAADId;
                 model.user.name = userConversation.UserName;
                 model.conversation.id = userConversation.ConversationId;
-                model.conversation.conversationType = userConversation.ConversationType;
+                model.conversation.conversationType =
+                    userConversation.ConversationType;
                 model.email = userConversation.Email;
                 model.serviceUrl = userConversation.ServiceUrl;
 
@@ -134,7 +173,10 @@ class ConversationHandler {
      * 업데이트
      * @param {ConversationModel} conversationObject
      */
-    async UpdatetUserConversation(conversationObject: ConversationModel, email?: string) {
+    async UpdatetUserConversation(
+        conversationObject: ConversationModel,
+        email?: string
+    ) {
         try {
             const helper = new KeyVaultHelper();
             const connection_string = await helper.GetKeyVaultSecret();
@@ -155,19 +197,43 @@ class ConversationHandler {
                 WHERE UserAADId = @UserAADId
             `;
 
-            let result = await pool.request()
-                .input('BotId', sql.NVarChar(300), conversationObject.bot.id)
-                .input('BotName', sql.NVarChar(100), conversationObject.bot.name)
-                .input('ConversationType', sql.NVarChar(50), conversationObject.conversation.conversationType)
-                .input('ConversationId', sql.NVarChar(300), conversationObject.conversation.id)
-                .input('UserId', sql.NVarChar(300), conversationObject.user.id)
-                .input('UserName', sql.NVarChar(200), conversationObject.user.name)
-                .input('Email', sql.NVarChar(100), email)
-                .input('UpdatedTime', sql.DateTime, new Date())
-                .input('UserAADId', sql.UniqueIdentifier, conversationObject.user.aadObjectId)
-                .input('ServiceUrl', sql.NVarChar(300), conversationObject.serviceUrl)
+            let result = await pool
+                .request()
+                .input("BotId", sql.NVarChar(300), conversationObject.bot.id)
+                .input(
+                    "BotName",
+                    sql.NVarChar(100),
+                    conversationObject.bot.name
+                )
+                .input(
+                    "ConversationType",
+                    sql.NVarChar(50),
+                    conversationObject.conversation.conversationType
+                )
+                .input(
+                    "ConversationId",
+                    sql.NVarChar(300),
+                    conversationObject.conversation.id
+                )
+                .input("UserId", sql.NVarChar(300), conversationObject.user.id)
+                .input(
+                    "UserName",
+                    sql.NVarChar(200),
+                    conversationObject.user.name
+                )
+                .input("Email", sql.NVarChar(100), email)
+                .input("UpdatedTime", sql.DateTime, new Date())
+                .input(
+                    "UserAADId",
+                    sql.UniqueIdentifier,
+                    conversationObject.user.aadObjectId
+                )
+                .input(
+                    "ServiceUrl",
+                    sql.NVarChar(300),
+                    conversationObject.serviceUrl
+                )
                 .query(query);
-
         } catch (err) {
             console.error("update error : ", err);
         }

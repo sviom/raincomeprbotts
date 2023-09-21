@@ -2,30 +2,30 @@
     "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.11/MicrosoftTeams.schema.json",
     "manifestVersion": "1.11",
     "version": "1.0.0",
-    "id": "{{state.fx-resource-appstudio.teamsAppId}}",
+    "id": "${{TEAMS_APP_ID}}",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
         "name": "Teams App, Inc.",
-        "websiteUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}",
-        "privacyUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/privacy",
-        "termsOfUseUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/termsofuse"
+        "websiteUrl": "${{STATE__FX_RESOURCE_FRONTEND_HOSTING__ENDPOINT}}",
+        "privacyUrl": "${{STATE__FX_RESOURCE_FRONTEND_HOSTING__ENDPOINT}}${{STATE__FX_RESOURCE_FRONTEND_HOSTING__INDEXPATH}}/privacy",
+        "termsOfUseUrl": "${{STATE__FX_RESOURCE_FRONTEND_HOSTING__ENDPOINT}}${{STATE__FX_RESOURCE_FRONTEND_HOSTING__INDEXPATH}}/termsofuse"
     },
     "icons": {
         "color": "resources/color.png",
         "outline": "resources/outline.png"
     },
     "name": {
-        "short": "{{config.manifest.appName.short}}",
-        "full": "{{config.manifest.appName.full}}"
+        "short": "${{CONFIG__MANIFEST__APPNAME__SHORT}}",
+        "full": "${{CONFIG__MANIFEST__APPNAME__FULL}}"
     },
     "description": {
-        "short": "Short description of {{config.manifest.appName.short}}",
-        "full": "Full description of {{config.manifest.appName.short}}"
+        "short": "Short description of ${{CONFIG__MANIFEST__APPNAME__SHORT}}",
+        "full": "Full description of ${{CONFIG__MANIFEST__APPNAME__SHORT}}"
     },
     "accentColor": "#FFFFFF",
     "bots": [
         {
-            "botId": "{{state.fx-resource-bot.botId}}",
+            "botId": "${{BOT_ID}}",
             "scopes": [
                 "personal",
                 "team",
@@ -56,7 +56,7 @@
     ],
     "composeExtensions": [
         {
-            "botId": "{{state.fx-resource-bot.botId}}",
+            "botId": "${{BOT_ID}}",
             "commands": [
                 {
                     "id": "createCard",
@@ -141,9 +141,11 @@
         "identity",
         "messageTeamMembers"
     ],
-    "validDomains": [],
+    "validDomains": [
+        "${{PROVISIONOUTPUT__BOTOUTPUT__VALIDDOMAIN}}"
+    ],
     "webApplicationInfo": {
-        "id": "{{state.fx-resource-aad-app-for-teams.clientId}}",
-        "resource": "{{{state.fx-resource-aad-app-for-teams.applicationIdUris}}}"
+        "id": "${{AAD_APP_CLIENT_ID}}",
+        "resource": "api://botid-${{BOT_ID}}"
     }
 }
